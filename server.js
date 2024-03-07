@@ -22,7 +22,6 @@ app.get('/', (req, res) => {
 
 app.use('/api/bills', bill_routes)
 
-
 // connect to db
 mongoose.connect(MONGO_URI)
   .then(() => {
