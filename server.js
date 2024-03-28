@@ -9,6 +9,7 @@ const MONGO_URI = process.env.MONGO_URI
 const express = require('express')
 const app = express()
 
+app.use(express.json())
 // middleware
 app.use((req, res, next) => {
   console.log(req.path, req.method)

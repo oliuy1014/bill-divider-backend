@@ -1,30 +1,20 @@
 const express = require('express')
-
 const router = express.Router()
+const Bill = require('../models/billModel')
+const { getBills, getBill, createBill, updateBill, deleteBill} = require('../controllers/billController')
 
 // Get all bills
-router.get('/', (req, res) => {
-  res.json({mssg: 'get all bills'})
-})
-
+router.get('/', getBills)
 // Get specific bill with id
-router.get('/:id', (req, res) => {
-  res.json({mssg: 'get specific bill'})
-})
+router.get('/:id', getBill)
 
 // Upload bill
-router.post('/', (req, res) => {
-  res.json({mssg: 'post new bill'})
-})
+router.post('/', createBill)
 
 // Delete bill
-router.delete('/:id', (req, res) => {
-  res.json({mssg: 'delete specific bill'})
-})
+router.delete('/:id', deleteBill)
 
 // Update bill
-router.patch('/:id', (req, res) => {
-  res.json({mssg: 'update specific bill'})
-})
+router.patch('/:id', updateBill) 
 
 module.exports = router
