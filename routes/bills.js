@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const Bill = require('../models/billModel')
 const { getBills, getBill, createBill, updateBill, deleteBill} = require('../controllers/billController')
 
 // Get all bills
