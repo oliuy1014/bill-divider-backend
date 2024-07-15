@@ -1,15 +1,7 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { BuyerSchema } = require('./buyerModel');
 
-const Schema = mongoose.Schema
-
-// schema for persons/buyers 
-const PersonSchema = new Schema ({
-  name: {
-    type: String,
-    required: true,
-  },
-  total: Number
-})
+const Schema = mongoose.Schema;
 
 // schema for individual purchase items
 const ItemSchema = new Schema({
@@ -25,11 +17,11 @@ const ItemSchema = new Schema({
     type: Number,
     required: true,
   },
-  buyers: [PersonSchema]
-})
+  buyers: [BuyerSchema],
+});
 
 // schema for entire bills
-const BillSchema = new Schema ({
+const BillSchema = new Schema({
   store: {
     type: String,
     required: true,
@@ -38,7 +30,9 @@ const BillSchema = new Schema ({
     type: [ItemSchema],
     required: true,
   },
-  buyers: [PersonSchema]
-}, {timestamps: true})
+  buyers: [BuyerSchema],
+},
+  { timestamps: true },
+);
 
-module.exports = mongoose.model("Bill", BillSchema)
+module.exports = mongoose.model("Bill", BillSchema);

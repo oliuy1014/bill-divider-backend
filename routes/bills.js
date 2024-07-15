@@ -1,19 +1,25 @@
-const express = require('express')
-const router = express.Router()
-const { getBills, getBill, createBill, updateBill, deleteBill} = require('../controllers/billController')
+const express = require('express');
+const router = express.Router();
+const {
+    getBills,
+    getBill,
+    createBill,
+    updateBill,
+    deleteBill,
+} = require("../controllers/billController");
 
 // Get all bills
-router.get('/', getBills)
+router.get("/", getBills);
 // Get specific bill with id
-router.get('/:id', getBill)
+router.get("/:id", getBill);
 
 // Upload bill
-router.post('/', createBill)
+router.post("/", createBill);
 
 // Delete bill
-router.delete('/:id', deleteBill)
+router.delete("/:id", deleteBill);
 
 // Update bill
-router.patch('/:id', updateBill) 
+router.patch("/:id", updateBill);
 
-module.exports = router
+module.exports = router;
