@@ -1,5 +1,7 @@
-const mongoose = require('mongoose');
-const { BuyerSchema } = require('./buyerModel');
+const mongoose = require("mongoose");
+const Buyer = require("./buyerModel");
+
+const BuyerSchema = Buyer.schema;
 
 const Schema = mongoose.Schema;
 
@@ -21,17 +23,18 @@ const ItemSchema = new Schema({
 });
 
 // schema for entire bills
-const BillSchema = new Schema({
-  store: {
-    type: String,
-    required: true,
+const BillSchema = new Schema(
+  {
+    store: {
+      type: String,
+      required: true,
+    },
+    items: {
+      type: [ItemSchema],
+      required: true,
+    },
+    buyers: [BuyerSchema],
   },
-  items: {
-    type: [ItemSchema],
-    required: true,
-  },
-  buyers: [BuyerSchema],
-},
   { timestamps: true },
 );
 

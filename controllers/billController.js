@@ -15,12 +15,8 @@ const getAndCheckId = (req) => {
 const getBills = async (req, res) => {
   try {
     const bills = await Bill.find({}).sort({ createdAt: -1 });
-    for (let i = 0; i < bills.length; i++) {
-      console.log(`bill ${i}: ${bills[i]}`);
-    }
     res.status(200).json({ bills });
   } catch (error) {
-    console.log("Error fetching bills: ", error.message);
     res.status(400).json({ error: error.message });
   }
 };
@@ -30,9 +26,13 @@ const getBill = async (req, res) => {
   try {
     const id = getAndCheckId(req);
     const bill = await Bill.findById(id);
+    if (!bill) {
+      return res
+        .status(400)
+        .json({ error: "Could not find bill: ID not found" });
+    }
     res.status(200).json({ bill: bill });
   } catch (error) {
-    console.log("Error fetching bill: ", error.message);
     res.status(400).json({ error: error.message });
   }
 };
@@ -44,7 +44,6 @@ const createBill = async (req, res) => {
     const bill = await Bill.create({ store, items, buyers });
     res.status(200).json(bill);
   } catch (error) {
-    console.log(error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -54,19 +53,30 @@ const deleteBill = async (req, res) => {
   const id = getAndCheckId(req);
   const deletedBill = await Bill.findOneAndDelete({ _id: id });
   if (!deletedBill) {
-    return res.status(400).json({ error: "Cannot delete bill: id not found" });
+    return res
+      .status(400)
+      .json({ error: "Could not delete bill: ID not found" });
   }
-  res.status(200).json({ bill: deletedBill });
+  res.status(200).json({ deletedBill: deletedBill });
 };
 
 // update a bill
 const updateBill = async (req, res) => {
   try {
     const id = getAndCheckId(req);
-    const bill = await Bill.updateOne({ _id: id }, { ...req.body });
-    if (bill) {
-      res.status(200).json({ newBill: bill });
+    const updates = req.body;
+
+    const bill = await Bill.findOneAndUpdate(
+      { _id: id }, // filter by id
+      { $set: { updates } },
+      { new: true }, // return copy of updated bill
+    );
+    if (!bill) {
+      return res
+        .status(400)
+        .json({ error: "Could not update bill: Id not found" });
     }
+    res.status(200).json({ newBill: bill });
   } catch (error) {
     console.log("Error updating bill: ", error);
     res.status(400).json({ error: error.message });
@@ -79,4 +89,5 @@ module.exports = {
   createBill,
   updateBill,
   deleteBill,
+  getAndCheckId,
 };

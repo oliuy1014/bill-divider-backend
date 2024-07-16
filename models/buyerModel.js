@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
@@ -22,4 +22,8 @@ const BuyerSchema = new Schema({
   },
 });
 
-module.exports = { Buyer: mongoose.model("Buyer", BuyerSchema), BuyerSchema };
+// Create the Buyer model
+const Buyer = mongoose.model("Buyer", BuyerSchema);
+
+// Export the Buyer model directly
+module.exports = Buyer;

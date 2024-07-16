@@ -1,14 +1,30 @@
-const mongoose = require("mongoose");
-const { Buyer } = require("../models/buyerModel");
+const Buyer = require("../models/buyerModel");
+
 const { getAndCheckId } = require("../controllers/billController");
 
 // get all buyers
 const getBuyers = async (req, res) => {
   try {
+    console.log(Buyer);
     const buyers = await Buyer.find({}).sort({ createdAt: -1 });
     res.status(200).json({ buyers: buyers });
   } catch (error) {
-    console.log("Error getting buyers: ", error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// get buyer by id
+const getBuyer = async (req, res) => {
+  try {
+    const id = getAndCheckId(req);
+    const buyer = await Buyer.findById(id);
+    if (!buyer) {
+      return res
+        .status(400)
+        .json({ error: "Could not find buyer: ID not found" });
+    }
+    res.status(200).json({ buyer: buyer });
+  } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
@@ -20,7 +36,6 @@ const createBuyer = async (req, res) => {
     const buyer = await Buyer.create({ name, bills });
     res.status(200).json({ buyer: buyer });
   } catch (error) {
-    console.log("Error creating new buyer: ", error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -30,34 +45,47 @@ const updateBuyer = async (req, res) => {
   try {
     const id = getAndCheckId(req);
     const updates = req.body;
-    // TODO: verify form of updates?
 
-    const buyer = await Buyer.findOneAndupdate(
-      { _id: id },
+    const buyer = await Buyer.findOneAndUpdate(
+      { _id: id }, // filter by id
       { $set: { ...updates } },
-      { returnNewDocument: true },
+      { new: true }, // return copy of updated buyer
     );
 
     if (!buyer) {
-      return res.status(400).json({ error: error.message });
+      return res
+        .status(400)
+        .json({ error: "Could not update buyer: Id not found" });
     }
 
     res.status(200).json({ buyer: buyer });
   } catch (error) {
-    console.log("Error updating buyer: ", error.message);
     res.status(400).json({ error: error.message });
   }
 };
 
-// flow: iterate through items and add users to items
-// when sending an update, assign buyers to items' buyers
-// arrays and add fractions of item prices to users.
-//
+// delete a buyer
+const deleteBuyer = async (req, res) => {
+  try {
+    const id = getAndCheckId(req);
+    const deletedBuyer = await Buyer.findOneAndDelete({ _id: id });
+
+    if (!deletedBuyer) {
+      return res
+        .status(400)
+        .json({ error: "Coud not delete buyer: ID not found" });
+    }
+
+    res.status(200).json({ deletedBuyer: deletedBuyer });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 module.exports = {
   getBuyers,
-  // getBuyer,
+  getBuyer,
   createBuyer,
   updateBuyer,
-  // deleteBuyer,
+  deleteBuyer,
 };
